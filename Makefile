@@ -1,4 +1,4 @@
-roms := pokered.gbc pokeblue.gbc pokeblue_debug.gbc
+roms := pokered.pocket pokeblue.pocket pokeblue_debug.pocket
 
 rom_obj := \
 audio.o \
@@ -40,15 +40,15 @@ RGBLINK ?= $(RGBDS)rgblink
 .PHONY: all red blue blue_debug clean tidy compare tools
 
 all: $(roms)
-red:        pokered.gbc
-blue:       pokeblue.gbc
-blue_debug: pokeblue_debug.gbc
+red:        pokered.pocket
+blue:       pokeblue.pocket
+blue_debug: pokeblue_debug.pocket
 
 clean: tidy
 	find gfx \( -iname '*.1bpp' -o -iname '*.2bpp' -o -iname '*.pic' \) -delete
 
 tidy:
-	rm -f $(roms) $(pokered_obj) $(pokeblue_obj) $(pokeblue_debug_obj) $(roms:.gbc=.map) $(roms:.gbc=.sym) rgbdscheck.o
+	rm -f $(roms) $(pokered_obj) $(pokeblue_obj) $(pokeblue_debug_obj) $(roms:.pocket=.map) $(roms:.pocket=.sym) rgbdscheck.o
 	$(MAKE) clean -C tools/
 
 compare: $(roms)
@@ -100,11 +100,11 @@ pokered_pad        = 0x00
 pokeblue_pad       = 0x00
 pokeblue_debug_pad = 0xff
 
-pokered_opt        = -jsv -n 0 -k 01 -l 0x33 -m 0x13 -r 03 -t "POKEMON RED"
-pokeblue_opt       = -jsv -n 0 -k 01 -l 0x33 -m 0x13 -r 03 -t "POKEMON BLUE"
-pokeblue_debug_opt = -jsv -n 0 -k 01 -l 0x33 -m 0x13 -r 03 -t "POKEMON BLUE"
+pokered_opt        = -js -n 0 -k 01 -l 0x33 -m 0x1b -r 03 -t "POKEMON RED" -f hg
+pokeblue_opt       = -js -n 0 -k 01 -l 0x33 -m 0x1b -r 03 -t "POKEMON BLUE" -f hg
+pokeblue_debug_opt = -js -n 0 -k 01 -l 0x33 -m 0x1b -r 03 -t "POKEMON BLUE" -f hg
 
-%.gbc: $$(%_obj) layout.link
+%.pocket: $$(%_obj) layout.link
 	$(RGBLINK) -p $($*_pad) -d -m $*.map -n $*.sym -l layout.link -o $@ $(filter %.o,$^)
 	$(RGBFIX) -p $($*_pad) $($*_opt) $@
 
